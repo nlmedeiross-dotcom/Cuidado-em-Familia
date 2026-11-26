@@ -4,10 +4,19 @@ import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapsh
 
 // Preencha com as credenciais do projeto Firebase criado para a família.
 const firebaseConfig = {
-  apiKey: "COLOQUE_SUA_API_KEY",
-  authDomain: "SEU_PROJETO.firebaseapp.com",
-  projectId: "SEU_PROJETO",
-  appId: "COLOQUE_SEU_APP_ID"
+
+  apiKey: "AIzaSyCpExVmVSQWWP-WV0xeyWoBeVhr_Zt3z4",
+
+  authDomain: "cuidado-em-familia.firebaseapp.com",
+
+  projectId: "cuidado-em-familia",
+
+  storageBucket: "cuidado-em-familia.firebasestorage.app",
+
+  messagingSenderId: "222868929019",
+
+  appId: "1:222868929019:web:988ee511911843678b735e"
+
 };
 
 const FAMILY_ORDER = ["Neias","Némerson","Nilton","Nélison","Izanete","Idelma","Ivandra","Ilizandra"];
