@@ -3,20 +3,14 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, 
 import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 // Preencha com as credenciais do projeto Firebase criado para a família.
+
 const firebaseConfig = {
-
   apiKey: "AIzaSyCpExVmVSQWWP-WV0xeyWoBeVhr_Zt3z-4",
-
   authDomain: "cuidado-em-familia.firebaseapp.com",
-
   projectId: "cuidado-em-familia",
-
   storageBucket: "cuidado-em-familia.firebasestorage.app",
-
   messagingSenderId: "222868929019",
-
   appId: "1:222868929019:web:988ee511911843678b735e"
-
 };
 
 const FAMILY_ORDER = ["Neias","Némerson","Nilton","Nélison","Izanete","Idelma","Ivandra","Ilizandra"];
