@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#245b4a">
+  <title>Cuidado em Família</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div><div class="eyebrow">AGENDA COMPARTILHADA</div><h1>Cuidado em Família</h1></div>
+    <button id="logoutBtn" class="secondary hidden">Sair</button>
+  </header>
+
+  <main>
+    <section id="loginView" class="panel narrow">
+      <h2>Acesso da família</h2>
+      <p>Entre com seu número de celular para receber um código de confirmação.</p>
+      <label for="phone">Celular com DDD</label>
+      <input id="phone" type="tel" placeholder="+55 11 99999-9999" autocomplete="tel">
+      <div id="recaptcha-container"></div>
+      <button id="sendCodeBtn">Enviar código por SMS</button>
+      <div id="codeArea" class="hidden">
+        <label for="smsCode">Código recebido por SMS</label>
+        <input id="smsCode" inputmode="numeric" autocomplete="one-time-code" placeholder="Código de 6 dígitos">
+        <button id="verifyCodeBtn">Confirmar acesso</button>
+      </div>
+      <p class="hint">O número precisa ser cadastrado previamente pelo administrador.</p>
+      <div id="loginMessage" class="message" role="status"></div>
+    </section>
+
+    <section id="appView" class="hidden">
+      <div class="welcome">
+        <div><div class="eyebrow">BEM-VINDO(A)</div><h2 id="welcomeName">Família</h2></div>
+        <div class="rotation-chip">Próximo: <strong id="nextPerson">—</strong></div>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="agenda">Agenda</button>
+        <button class="tab" data-tab="rotation">Rodízio</button>
+        <button class="tab" data-tab="history">Histórico</button>
+        <button class="tab" data-tab="family">Família</button>
+      </nav>
+
+      <section id="tab-agenda" class="tabpage">
+        <div class="section-heading"><div><div class="eyebrow">COMPROMISSOS</div><h2>Próximos atendimentos</h2></div><button id="newAppointmentBtn">+ Novo</button></div>
+        <div id="appointments" class="stack"><p class="muted">Carregando agenda…</p></div>
+      </section>
+
+      <section id="tab-rotation" class="tabpage hidden">
+        <div class="eyebrow">ORDEM ATUAL</div><h2>Rodízio da família</h2>
+        <p class="muted">Cada novo compromisso recebe o próximo participante da sequência.</p>
+        <ol id="rotationList" class="rotation-list"></ol>
+      </section>
+
+      <section id="tab-history" class="tabpage hidden">
+        <div class="eyebrow">REGISTROS</div><h2>Histórico</h2>
+        <div id="historyList" class="stack"></div>
+      </section>
+
+      <section id="tab-family" class="tabpage hidden">
+        <div class="eyebrow">PARTICIPANTES</div><h2>Família</h2>
+        <p id="roleDescription" class="muted"></p>
+        <div id="familyList" class="stack"></div>
+        <div id="adminArea" class="panel hidden">
+          <h3>Administração</h3>
+          <p>O administrador poderá cadastrar participantes, telefones e ajustar a ordem do rodízio após a configuração inicial do banco de dados.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="appointmentDialog">
+    <form id="appointmentForm" method="dialog">
+      <div class="section-heading"><h2>Novo compromisso</h2><button type="button" id="closeDialog" class="icon-button">×</button></div>
+      <label for="parent">Quem será acompanhado?</label>
+      <select id="parent" required><option value="Mãe">Mãe</option><option value="Pai">Pai</option><option value="Ambos">Ambos</option></select>
+      <label for="kind">Tipo</label>
+      <select id="kind" required><option>Consulta</option><option>Exame</option><option>Outro</option></select>
+      <label for="date">Data e horário</label><input id="date" type="datetime-local" required>
+      <label for="professional">Médico / local</label><input id="professional" placeholder="Nome do profissional ou local">
+      <label for="notes">Orientações</label><textarea id="notes" rows="3" placeholder="Preparo, documentos, observações…"></textarea>
+      <button type="submit">Salvar e atribuir responsável</button>
+      <div id="formMessage" class="message"></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
