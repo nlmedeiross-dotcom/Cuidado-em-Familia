@@ -5,7 +5,7 @@ import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapsh
 // Preencha com as credenciais do projeto Firebase criado para a família.
 const firebaseConfig = {
 
-  apiKey: "AIzaSyCpExVmVSQWWP-WV0xeyWoBeVhr_Zt3z4",
+  apiKey: "AIzaSyCpExVmVSQWWP-WV0xeyWoBeVhr_Zt3z-4",
 
   authDomain: "cuidado-em-familia.firebaseapp.com",
 
