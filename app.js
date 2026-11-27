@@ -96,7 +96,35 @@ function renderAppointmentList(target,items){
     const h=document.createElement("h3");h.textContent=`${a.kind} — ${a.parent}`;
     const p=document.createElement("p");p.textContent=`${when} · Responsável: ${a.assignee||"A definir"}`;
     const p2=document.createElement("p");p2.textContent=[a.professional,a.notes].filter(Boolean).join(" · ");
-    left.append(h,p,p2);const tag=document.createElement("span");tag.className="tag";tag.textContent=a.status||"Agendado";d.append(left,tag);el.append(d);
+    left.append(h,p,p2);const tag=document.createElement("span");tag.className="tag";tag.textContent=a.status||"Agendado";d.append(left,tag);
+
+if(currentMember && currentMember.role==="admin"){
+  const btn=document.createElement("button");
+  btn.textContent="Excluir";
+  btn.type="button";
+  btn.onclick=async()=>{
+    if(!confirm("Deseja excluir este agendamento? O rodízio não será alterado.")) return;
+    try{
+      await runTransaction(db,async tx=>{
+        const logRef=doc(collection(db,"auditLog"));
+        tx.set(logRef,{
+          action:"appointment_deleted",
+          appointmentId:a.id,
+          assignee:a.assignee||"",
+          by:currentMember.uid,
+          at:serverTimestamp()
+        });
+        tx.delete(doc(db,"appointments",a.id));
+      });
+      alert("Agendamento excluído.");
+    }catch(e){
+      alert("Não foi possível excluir. Verifique as permissões.");
+    }
+  };
+  d.append(btn);
+}
+
+el.append(d);
   });
 }
 
