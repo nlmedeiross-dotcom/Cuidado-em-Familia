@@ -157,18 +157,47 @@ $("appointmentForm").onsubmit=async ev=>{
     const date=new Date(dateValue);
     // A transação garante que dois cadastros simultâneos não recebam a mesma posição.
     await runTransaction(db,async tx=>{
-      const stateRef=doc(db,"settings","rotation");
-      const stateSnap=await tx.get(stateRef);
-      const index=stateSnap.exists()?Number(stateSnap.data().nextIndex||0):0;
-      const assignee=FAMILY_ORDER[index%FAMILY_ORDER.length];
-      const appointmentRef=doc(collection(db,"appointments"));
-      tx.set(appointmentRef,{
-        parent:$("parent").value,kind:$("kind").value,date,
-        professional:$("professional").value.trim(),notes:$("notes").value.trim(),
-        assignee,createdBy:currentMember.uid,createdByName:currentMember.name,
-        status:"Agendado",createdAt:serverTimestamp(),rotationIndex:index
-      });
-      tx.set(stateRef,{nextIndex:(index+1)%FAMILY_ORDER.length,lastAssigned:assignee,updatedAt:serverTimestamp()});
+     const stateRef=doc(db,"settings","rotation");
+const stateSnap=await tx.get(stateRef);
+
+const rotationData=stateSnap.exists()?stateSnap.data():{};
+const index=Number(rotationData.nextIndex||0);
+const returnedTurns=Array.isArray(rotationData.returnedTurns)
+  ? [...rotationData.returnedTurns]
+  : [];
+
+const usingReturnedTurn=returnedTurns.length>0;
+
+const assignee=usingReturnedTurn
+  ? returnedTurns.shift()
+  : FAMILY_ORDER[index%FAMILY_ORDER.length];
+
+const nextIndex=usingReturnedTurn
+  ? index
+  : (index+1)%FAMILY_ORDER.length;
+
+const appointmentRef=doc(collection(db,"appointments"));
+
+tx.set(appointmentRef,{
+  parent:$("parent").value,
+  kind:$("kind").value,
+  date,
+  professional:$("professional").value.trim(),
+  notes:$("notes").value.trim(),
+  assignee,
+  createdBy:currentMember.uid,
+  createdByName:currentMember.name,
+  status:"Agendado",
+  createdAt:serverTimestamp(),
+  rotationIndex:usingReturnedTurn?null:index
+});
+
+tx.set(stateRef,{
+  nextIndex,
+  lastAssigned:assignee,
+  returnedTurns,
+  updatedAt:serverTimestamp()
+});
       const logRef=doc(collection(db,"auditLog"));
       tx.set(logRef,{action:"appointment_created",assignee,appointmentId:appointmentRef.id,by:currentMember.uid,at:serverTimestamp()});
     });
