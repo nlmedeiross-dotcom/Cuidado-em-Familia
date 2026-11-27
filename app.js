@@ -52,7 +52,7 @@ onAuthStateChanged(auth, async user => {
   }
   try {
     const memberSnap = await getDoc(doc(db,"members",user.uid));
-    if(!memberSnap.exists() || memberSnap.data().active !== true) {
+   console.log("UID:", user.uid, "Cadastro encontrado:", memberSnap.exists(), "Dados:", memberSnap.data()); if(!memberSnap.exists() || memberSnap.data().active !== true) {
   const motivo = !memberSnap.exists()
     ? "Documento não encontrado"
     : "Cadastro encontrado, mas active não é true";
