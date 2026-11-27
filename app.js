@@ -106,7 +106,27 @@ if(currentMember && a.assignee===currentMember.name && !a.attendanceConfirmed){
     if(!confirm("Confirma que acompanhará esta consulta?")) return;
 
     try{
-      await updateDoc(doc(db,"appointments",a.id),{
+     await runTransaction(db,async tx=>{
+  const appointmentRef=doc(db,"appointments",a.id);
+  const logRef=doc(collection(db,"auditLog"));
+
+  tx.update(appointmentRef,{
+    attendanceConfirmed:true,
+    attendanceConfirmedBy:currentMember.uid,
+    attendanceConfirmedAt:serverTimestamp()
+  });
+
+  tx.set(logRef,{
+    action:"attendance_confirmed",
+    appointmentId:a.id,
+    assignee:currentMember.name,
+    by:currentMember.uid,
+    byName:currentMember.name,
+    at:serverTimestamp()
+  });
+});
+
+alert("Presença confirmada! Aviso registrado para toda a família."); await updateDoc(doc(db,"appointments",a.id),{
         attendanceConfirmed:true,
         attendanceConfirmedBy:currentMember.uid,
         attendanceConfirmedAt:serverTimestamp()
