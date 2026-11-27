@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, runTransaction, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 // Preencha com as credenciais do projeto Firebase criado para a família.
 
@@ -97,7 +97,28 @@ function renderAppointmentList(target,items){
     const p=document.createElement("p");p.textContent=`${when} · Responsável: ${a.assignee||"A definir"}`;
     const p2=document.createElement("p");p2.textContent=[a.professional,a.notes].filter(Boolean).join(" · ");
     left.append(h,p,p2);const tag=document.createElement("span");tag.className="tag";tag.textContent=a.status||"Agendado";d.append(left,tag);
+if(currentMember && a.assignee===currentMember.name && !a.attendanceConfirmed){
+  const confirmBtn=document.createElement("button");
+  confirmBtn.textContent="Confirmar presença";
+  confirmBtn.type="button";
 
+  confirmBtn.onclick=async()=>{
+    if(!confirm("Confirma que acompanhará esta consulta?")) return;
+
+    try{
+      await updateDoc(doc(db,"appointments",a.id),{
+        attendanceConfirmed:true,
+        attendanceConfirmedBy:currentMember.uid,
+        attendanceConfirmedAt:serverTimestamp()
+      });
+      alert("Presença confirmada!");
+    }catch(e){
+      alert("Não foi possível confirmar. Verifique as permissões.");
+    }
+  };
+
+  d.append(confirmBtn);
+}
 if(currentMember && currentMember.role==="admin"){
   const btn=document.createElement("button");
   btn.textContent="Excluir";
