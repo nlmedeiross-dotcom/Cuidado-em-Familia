@@ -126,12 +126,7 @@ if(currentMember && a.assignee===currentMember.name && !a.attendanceConfirmed){
   });
 });
 
-alert("Presença confirmada! Aviso registrado para toda a família."); await updateDoc(doc(db,"appointments",a.id),{
-        attendanceConfirmed:true,
-        attendanceConfirmedBy:currentMember.uid,
-        attendanceConfirmedAt:serverTimestamp()
-      });
-      alert("Presença confirmada!");
+alert("Presença confirmada! Aviso registrado para toda a família."); 
     }catch(e){
       alert("Não foi possível confirmar. Verifique as permissões.");
     }
