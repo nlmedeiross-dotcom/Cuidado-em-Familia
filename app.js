@@ -85,7 +85,41 @@ function listenAppointments(){
     renderAppointmentList("appointments",upcoming);
     renderAppointmentList("historyList",history.reverse());
   },()=>toast("Não foi possível sincronizar a agenda."));
-}
+const noticesQuery=query(
+  collection(db,"auditLog"),
+  orderBy("at","desc")
+);
+
+onSnapshot(noticesQuery,snap=>{
+  const list=$("notifications-list");
+  if(!list) return;
+
+  list.innerHTML="";
+  const notices=[];
+
+  snap.forEach(item=>{
+    const n=item.data();
+    if(n.action==="attendance_confirmed") notices.push(n);
+  });
+
+  if(!notices.length){
+    list.textContent="Nenhuma confirmação registrada ainda.";
+    return;
+  }
+
+  notices.slice(0,20).forEach(n=>{
+    const p=document.createElement("p");
+    const when=n.at?.toDate
+      ? n.at.toDate().toLocaleString("pt-BR")
+      : "";
+
+    p.textContent=${n.byName||n.assignee} confirmou presença. Responsável: ${n.assignee}. ${when};
+    list.append(p);
+  });
+},()=>{
+  const list=$("notifications-list");
+  if(list) list.textContent="Não foi possível carregar os avisos.";
+});}
 function renderAppointmentList(target,items){
   const el=$(target);el.innerHTML="";
   if(!items.length){el.innerHTML='<p class="muted">Nenhum registro por enquanto.</p>';return;}
