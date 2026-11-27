@@ -53,10 +53,14 @@ onAuthStateChanged(auth, async user => {
   try {
     const memberSnap = await getDoc(doc(db,"members",user.uid));
     if(!memberSnap.exists() || memberSnap.data().active !== true) {
-      await signOut(auth);
-      $("loginMessage").textContent="Seu número ainda não foi liberado pelo administrador.";
-      return;
-    }
+  const motivo = !memberSnap.exists()
+    ? "Documento não encontrado"
+    : "Cadastro encontrado, mas active não é true";
+
+  $("loginMessage").textContent = motivo + " | UID: " + user.uid;
+  await signOut(auth);
+  return;
+}
     currentMember={uid:user.uid,...memberSnap.data()};
     show("loginView",false); show("appView"); show("logoutBtn");
     $("welcomeName").textContent=currentMember.name;
