@@ -113,7 +113,8 @@ onSnapshot(noticesQuery,snap=>{
       ? n.at.toDate().toLocaleString("pt-BR")
       : "";
 
-    p.textContent=${n.byName||n.assignee} confirmou presença. Responsável: ${n.assignee}. ${when};
+    <CodeBlock language="javascript" editable>
+p.textContent=$DIL0 confirmou presença. Responsável: $DIL1. $DIL2;
     list.append(p);
   });
 },()=>{
