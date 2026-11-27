@@ -119,7 +119,69 @@ if(currentMember && a.assignee===currentMember.name && !a.attendanceConfirmed){
 
   d.append(confirmBtn);
 }
-if(currentMember && currentMember.role==="admin"){
+if(currentMember && currentMember.role==="admin" && a.status==="Agendado"){
+  const cancelBtn=document.createElement("button");
+  cancelBtn.textContent="Cancelar";
+  cancelBtn.type="button";
+
+  cancelBtn.onclick=async()=>{
+    if(!confirm("Deseja cancelar este agendamento? A vez do responsável retornará ao rodízio.")) return;
+
+    try{
+      await runTransaction(db,async tx=>{
+        const appointmentRef=doc(db,"appointments",a.id);
+        const stateRef=doc(db,"settings","rotation");
+
+        const appointmentSnap=await tx.get(appointmentRef);
+        const stateSnap=await tx.get(stateRef);
+
+        if(!appointmentSnap.exists()) throw new Error("Agendamento não encontrado.");
+
+        const appointmentData=appointmentSnap.data();
+
+        if(appointmentData.status!=="Agendado"){
+          throw new Error("Este agendamento não pode mais ser cancelado.");
+        }
+
+        const stateData=stateSnap.exists()?stateSnap.data():{};
+        const returnedTurns=Array.isArray(stateData.returnedTurns)
+          ? [...stateData.returnedTurns]
+          : [];
+
+        returnedTurns.push(appointmentData.assignee);
+
+        tx.update(appointmentRef,{
+          status:"Cancelado",
+          canceledAt:serverTimestamp(),
+          canceledBy:currentMember.uid
+        });
+
+        tx.set(stateRef,{
+          nextIndex:Number(stateData.nextIndex||0),
+          lastAssigned:stateData.lastAssigned||appointmentData.assignee,
+          returnedTurns,
+          updatedAt:serverTimestamp()
+        },{merge:true});
+
+        const logRef=doc(collection(db,"auditLog"));
+        tx.set(logRef,{
+          action:"appointment_canceled",
+          appointmentId:a.id,
+          assignee:appointmentData.assignee,
+          by:currentMember.uid,
+          at:serverTimestamp()
+        });
+      });
+
+      alert("Agendamento cancelado. A vez do responsável retornou ao rodízio.");
+    }catch(e){
+      console.error(e);
+      alert("Não foi possível cancelar. Verifique as permissões.");
+    }
+  };
+
+  d.append(cancelBtn);
+}if(currentMember && currentMember.role==="admin"){
   const btn=document.createElement("button");
   btn.textContent="Excluir";
   btn.type="button";
