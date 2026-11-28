@@ -26,6 +26,7 @@ getRedirectResult(auth)
 const googleProvider = new GoogleAuthProvider();const db = getFirestore(app);
 let confirmation = null, currentMember = null, unsubscribeAppointments = null;
 const $ = id => document.getElementById(id);
+console.log("BOTÃO GOOGLE:", $("googleLoginBtn"));
 const show = (id, yes=true) => $(id).classList.toggle("hidden", !yes);
 const toast = msg => { $("toast").textContent=msg; $("toast").classList.add("show"); setTimeout(()=>$("toast").classList.remove("show"),2600); };
 
