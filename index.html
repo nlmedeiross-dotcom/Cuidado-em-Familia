@@ -7,6 +7,35 @@
   <title>Cuidado em Família</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./styles.css">
+<style>
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 12px;
+}
+.calendar-day {
+  padding: 10px 2px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  min-height: 38px;
+}
+.calendar-day.today {
+  background: #dceeff;
+  border-color: #3182ce;
+  font-weight: bold;
+}
+.calendar-day.has-appointment {
+  background: #dff5e3;
+  font-weight: bold;
+}
+.calendar-weekday {
+  text-align: center;
+  font-weight: bold;
+  padding: 6px 0;
+}
+</style>
 </head>
 <body>
   <header class="topbar">
