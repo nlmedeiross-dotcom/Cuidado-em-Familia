@@ -29,19 +29,7 @@ const $ = id => document.getElementById(id);
 const show = (id, yes=true) => $(id).classList.toggle("hidden", !yes);
 const toast = msg => { $("toast").textContent=msg; $("toast").classList.add("show"); setTimeout(()=>$("toast").classList.remove("show"),2600); };
 
-$("sendCodeBtn").onclick = async () => {
-  try {
-    const phone = $("phone").value.trim();
-    if (!phone.startsWith("+") || phone.length < 10) throw new Error("Informe o telefone com código do país, por exemplo +55 11 99999-9999.");
-    if (!window.recaptchaVerifier) window.recaptchaVerifier = new RecaptchaVerifier(auth,"recaptcha-container",{size:"invisible"});
-    confirmation = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-    show("codeArea"); $("loginMessage").textContent="Código enviado. Verifique suas mensagens SMS.";
-  } catch(e) { $("loginMessage").textContent=e.message; }
-};
-$("verifyCodeBtn").onclick = async () => {
-  try { await confirmation.confirm($("smsCode").value.trim()); }
-  catch(e) { $("loginMessage").textContent="Não foi possível confirmar o código. Confira os números e tente novamente."; }
-};$("googleLoginBtn").onclick = async () => {
+$("googleLoginBtn").onclick = async () => {
   try {
     await signInWithRedirect(auth, googleProvider);
   } catch(e) {
