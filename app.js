@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, collection, addDoc, query, orderBy, onSnapshot, runTransaction, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 // Preencha com as credenciais do projeto Firebase criado para a família.
@@ -16,7 +16,7 @@ const firebaseConfig = {
 const FAMILY_ORDER = ["Neias","Némerson","Nilton","Nélison","Izanete","Idelma","Ivandra","Ilizandra"];
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();const db = getFirestore(app);
 let confirmation = null, currentMember = null, unsubscribeAppointments = null;
 const $ = id => document.getElementById(id);
 const show = (id, yes=true) => $(id).classList.toggle("hidden", !yes);
