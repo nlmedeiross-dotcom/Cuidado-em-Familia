@@ -34,6 +34,13 @@ $("sendCodeBtn").onclick = async () => {
 $("verifyCodeBtn").onclick = async () => {
   try { await confirmation.confirm($("smsCode").value.trim()); }
   catch(e) { $("loginMessage").textContent="Não foi possível confirmar o código. Confira os números e tente novamente."; }
+};$("googleLoginBtn").onclick = async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+  } catch(e) {
+    console.error(e);
+    $("loginMessage").textContent = "Não foi possível entrar com Google. Tente novamente.";
+  }
 };
 $("logoutBtn").onclick = () => signOut(auth);
 $("newAppointmentBtn").onclick = () => $("appointmentDialog").showModal();
