@@ -95,8 +95,60 @@ function listenAppointments(){
     snap.forEach(d=>{const a={id:d.id,...d.data()};(a.date?.toDate && a.date.toDate()<new Date()?history:upcoming).push(a);});
     renderAppointmentList("appointments",upcoming);
     renderAppointmentList("historyList",history.reverse());
+   
+    renderCalendar([...upcoming,...history]);
   },()=>toast("Não foi possível sincronizar a agenda."));
-const noticesQuery=query(
+function renderCalendar(items){
+  const grid=$("calendarGrid");
+  const title=$("calendarMonth");
+  if(!grid || !title) return;
+
+  const now=new Date();
+  const year=now.getFullYear();
+  const month=now.getMonth();
+
+  title.textContent=now.toLocaleDateString("pt-BR",{
+    month:"long",
+    year:"numeric"
+  });
+
+  grid.innerHTML="";
+
+  ["D","S","T","Q","Q","S","S"].forEach(day=>{
+    const el=document.createElement("div");
+    el.className="calendar-weekday";
+    el.textContent=day;
+    grid.appendChild(el);
+  });
+
+  const first=new Date(year,month,1).getDay();
+  const total=new Date(year,month+1,0).getDate();
+
+  for(let i=0;i<first;i++){
+    grid.appendChild(document.createElement("div"));
+  }
+
+  for(let day=1;day<=total;day++){
+    const el=document.createElement("div");
+    el.className="calendar-day";
+    el.textContent=day;
+
+    const hasAppointment=items.some(a=>{
+      if(!a.date?.toDate) return false;
+      const date=a.date.toDate();
+      return date.getFullYear()===year &&
+        date.getMonth()===month &&
+        date.getDate()===day;
+    });
+
+    if(hasAppointment) el.classList.add("has-appointment");
+
+    if(day===now.getDate()) el.classList.add("today");
+
+    grid.appendChild(el);
+  }
+}
+  const noticesQuery=query(
   collection(db,"auditLog"),
   orderBy("at","desc")
 );
