@@ -101,7 +101,10 @@ function listenAppointments(){
 function renderCalendar(items){
   const grid=$("calendarGrid");
   const title=$("calendarMonth");
-  if(!grid || !title) return;
+  if(!grid || !title) {
+  console.log("Elementos do calendário não encontrados");
+  return;
+}
 
   const now=new Date();
   const year=now.getFullYear();
