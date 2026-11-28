@@ -27,6 +27,10 @@ const googleProvider = new GoogleAuthProvider();const db = getFirestore(app);
 let confirmation = null, currentMember = null, unsubscribeAppointments = null;
 const $ = id => document.getElementById(id);
 console.log("BOTÃO GOOGLE:", $("googleLoginBtn"));
+console.log("TOAST:", $("toast"));
+console.log("LOGOUT:", $("logoutBtn"));
+console.log("NOVO AGENDAMENTO:", $("newAppointmentBtn"));
+console.log("FECHAR DIÁLOGO:", $("closeDialog"));
 const show = (id, yes=true) => $(id).classList.toggle("hidden", !yes);
 const toast = msg => { $("toast").textContent=msg; $("toast").classList.add("show"); setTimeout(()=>$("toast").classList.remove("show"),2600); };
 
