@@ -96,9 +96,12 @@ function listenAppointments(){
     renderAppointmentList("appointments",upcoming);
     renderAppointmentList("historyList",history.reverse());
    
-    renderCalendar([...upcoming,...history]);
+    currentAppointments=[...upcoming,...history];
+renderCalendar(currentAppointments);
   },()=>toast("Não foi possível sincronizar a agenda."));
-function renderCalendar(items){
+let calendarDate=new Date();
+  let currentAppointments=[];
+  function renderCalendar(items){
   const grid=$("calendarGrid");
   const title=$("calendarMonth");
   if(!grid || !title) {
@@ -106,7 +109,8 @@ function renderCalendar(items){
   return;
 }
 
-  const now=new Date();
+  const now=calendarDate;
+const today=new Date();
   const year=now.getFullYear();
   const month=now.getMonth();
 
@@ -146,11 +150,24 @@ function renderCalendar(items){
 
     if(hasAppointment) el.classList.add("has-appointment");
 
-    if(day===now.getDate()) el.classList.add("today");
+    if(day===today.getDate() &&
+   month===today.getMonth() &&
+   year===today.getFullYear()) {
+  el.classList.add("today");
+}
 
     grid.appendChild(el);
   }
 }
+  $("prevMonth").onclick=()=>{
+  calendarDate.setMonth(calendarDate.getMonth()-1);
+  renderCalendar(currentAppointments);
+};
+
+$("nextMonth").onclick=()=>{
+  calendarDate.setMonth(calendarDate.getMonth()+1);
+  renderCalendar(currentAppointments);
+};
   const noticesQuery=query(
   collection(db,"auditLog"),
   orderBy("at","desc")
