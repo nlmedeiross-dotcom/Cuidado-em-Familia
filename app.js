@@ -51,6 +51,16 @@ document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
   $("tab-"+b.dataset.tab).classList.remove("hidden");
 });
 
+let calendarDate=new Date();
+  let currentAppointments=[];
+  function renderCalendar(items){
+  const grid=$("calendarGrid");
+  const title=$("calendarMonth");
+  if(!grid || !title) {
+  console.log("Elementos do calendário não encontrados");
+  return;
+}
+  
 onAuthStateChanged(auth, async user => {
   if (!user) {
     show("loginView"); show("appView",false); show("logoutBtn",false);
@@ -99,15 +109,7 @@ function listenAppointments(){
     currentAppointments=[...upcoming,...history];
 renderCalendar(currentAppointments);
   },()=>toast("Não foi possível sincronizar a agenda."));
-let calendarDate=new Date();
-  let currentAppointments=[];
-  function renderCalendar(items){
-  const grid=$("calendarGrid");
-  const title=$("calendarMonth");
-  if(!grid || !title) {
-  console.log("Elementos do calendário não encontrados");
-  return;
-}
+
 
   const now=calendarDate;
 const today=new Date();
@@ -159,7 +161,7 @@ const today=new Date();
     grid.appendChild(el);
   }
 }
-  $("prevMonth").onclick=()=>{
+    $("prevMonth").onclick=()=>{
   calendarDate.setMonth(calendarDate.getMonth()-1);
   renderCalendar(currentAppointments);
 };
@@ -168,6 +170,7 @@ $("nextMonth").onclick=()=>{
   calendarDate.setMonth(calendarDate.getMonth()+1);
   renderCalendar(currentAppointments);
 };
+  
   const noticesQuery=query(
   collection(db,"auditLog"),
   orderBy("at","desc")
